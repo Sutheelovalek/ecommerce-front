@@ -19,7 +19,7 @@ const Desc = styled.p`
 `;
 const ColumnsWrapper = styled.div`
   display: grid;
-  grid-template-columns: 0.9fr 1.1fr;
+  grid-template-columns: 1.1fr 0.9fr;
   gap: 40px;
   img {
     max-width: 100%;
@@ -34,21 +34,16 @@ const ButtonWrapper = styled.div`
   gap: 10px;
   margin-top: 25px;
 `;
-export default function Featured() {
+export default function Featured({product}) {
   return (
     <Bg>
       <Center>
         <ColumnsWrapper>
           <Column>
             <div>
-              <Title>Pro anywhere.</Title>
+              <Title>{product.title}</Title>
               <Desc>
-                The new M2 chip makes the 13‑inch MacBook Pro more capable than
-                ever. The same compact design supports up to 20 hours of battery
-                life1 and an active cooling system to sustain enhanced
-                performance. Featuring a brilliant Retina display, a FaceTime HD
-                camera, and studio‑quality mics, it’s our most portable pro
-                laptop.
+                {product.description}
                 <ButtonWrapper>
                   <Button outline white>
                     Read more
