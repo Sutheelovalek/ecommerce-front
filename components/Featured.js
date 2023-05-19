@@ -2,6 +2,7 @@
 import Center from "@/components/Center";
 import styled from "styled-components";
 import Button from "@/components/Button";
+import ButtonLink from "./ButtonLink";
 
 const Bg = styled.div`
   background-color: #222;
@@ -45,9 +46,11 @@ export default function Featured({product}) {
               <Desc>
                 {product.description}
                 <ButtonWrapper>
-                  <Button outline white>
+                  <ButtonLink 
+                  href={'/products/' + product._id}
+                  outline={1} white={1}>
                     Read more
-                  </Button>
+                  </ButtonLink>
                   <Button primary>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
