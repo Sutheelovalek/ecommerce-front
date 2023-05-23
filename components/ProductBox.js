@@ -60,19 +60,15 @@ export default function ProductBox({_id,title,description,price,images}) {
             </Title>
             <PriceRow>
                 <Price>
-                ฿{price}
+                ฿{price.toLocaleString()}
                 </Price>
             <Button 
             onClick={() => addProduct(_id)}
             primary outline>
                 Add to cart
             </Button>  
-      
-            </PriceRow>
-               
-            
+            </PriceRow>        
             </ProductInfoBox>
-
         </ProductWrapper>
     );
 }
