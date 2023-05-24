@@ -26,9 +26,6 @@ export default async function handler(req, res) {
     const uniqueIds = [...new Set(productsIds)];
     const productsInfos = await Product.find({ _id: { $in: uniqueIds } });
 
-    console.log('uniqueIds:', uniqueIds);
-    console.log('productsInfos:', productsInfos);
-
     const line_items = [];
     for (const productId of uniqueIds) {
       const productInfo = productsInfos.find(p => p._id.toString() === productId);
@@ -45,7 +42,6 @@ export default async function handler(req, res) {
       }
     }
 
-    console.log('line_items:', line_items);
 
     if (line_items.length === 0) {
       throw new Error('No line items found');
@@ -68,7 +64,7 @@ export default async function handler(req, res) {
       customer_email: email,
       success_url: process.env.PUBLIC_URL + '/cart?success=1',
       cancel_url: process.env.PUBLIC_URL + '/cart?canceled=1',
-      metadata: { orderId: orderDoc._id.toString() },
+      metadata: { orderId: orderDoc._id.toString(),test:'ok'},
     });
 
     res.json({
