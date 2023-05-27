@@ -1,8 +1,10 @@
 import { mongooseConnect } from "@/lib/mongoose";
 import { Order } from "@/models/Order";
 import { buffer } from 'micro';
-const stripe = require('stripe')(process.env.STRIPE_SK);
+
 const endpointSecret = "whsec_6ded623aaa6f76773a6083ce8474f2b52017c47c560d75c614d52c56ec4b3e52";
+
+const stripe = require('stripe')(process.env.STRIPE_SK);
 
 export default async function handler(req, res) {
   await mongooseConnect();
@@ -23,7 +25,6 @@ export default async function handler(req, res) {
       const data = event.data.object;
       const orderId = data.metadata.orderId;
       const paid = data.payment_status === 'paid';
-
       if (orderId && paid) {
         // Update the order's paid status to true
         await Order.findByIdAndUpdate(orderId, { paid: true });

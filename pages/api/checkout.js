@@ -21,7 +21,6 @@ export default async function handler(req, res) {
 
   try {
     await mongooseConnect();
-
     const productsIds = cartProducts;
     const uniqueIds = [...new Set(productsIds)];
     const productsInfos = await Product.find({ _id: { $in: uniqueIds } });
@@ -55,7 +54,7 @@ export default async function handler(req, res) {
       postalCode,
       streetAddress,
       country,
-      paid: false,
+      paid: false, 
     });
 
     const session = await stripe.checkout.sessions.create({
@@ -66,7 +65,6 @@ export default async function handler(req, res) {
       cancel_url: process.env.PUBLIC_URL + '/cart?canceled=1',
       metadata: { orderId: orderDoc._id.toString(),test:'ok'},
     });
-
     res.json({
       url: session.url,
     });
