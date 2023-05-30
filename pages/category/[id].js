@@ -42,13 +42,14 @@ export default function CategoryPage({
   category,subCategories, 
   products: originalProducts }) 
   {
-    const [products, setProducts] = useState(originalProducts);
-    const [filterValues, setFilterValues] = useState(
-        category.properties.map(p => ({name: p.name, value:'all'}))   
-    );
-    const [sort, setSort] = useState('_id-desc');
-    const [loadingProducts, setLoadingProducts] = useState(false)
+    const defaultSorting = '_id-desc';
+    const defaultFilterValues = category.properties.map(p => ({name: p.name, value:'all'}))
 
+    const [products, setProducts] = useState(originalProducts);
+    const [filterValues, setFilterValues] = useState(defaultFilterValues);
+    const [sort, setSort] = useState(defaultSorting);
+    const [loadingProducts, setLoadingProducts] = useState(false);
+    const [filtersChanged, setFiltersChanged] = useState(false);
 
 function handlerFilterChange(filterName, filterValue) {
     setFilterValues(prev => {
@@ -56,9 +57,13 @@ function handlerFilterChange(filterName, filterValue) {
             name: p.name, 
             value: p.name === filterName ? filterValue : p.value,}));
     });
+    setFiltersChanged(true);
 }
 useEffect(() => {
-  setLoadingProducts(true);
+  if (!filtersChanged) {
+    return;
+  }
+    setLoadingProducts(true);
     const catIds = [category._id, ...(subCategories.map((c) => c._id) || [])];
     const params = new URLSearchParams();
     params.set('categories', catIds.join(','));
@@ -71,11 +76,10 @@ useEffect(() => {
     const url = `/api/products?` + params.toString();
     axios.get(url).then((res) => {
       setProducts(res.data);
-      setTimeout(() => {
-        setLoadingProducts(false);
-      }, 1000);
+      setLoadingProducts(false);
+    
     });
-  }, [category._id, subCategories, filterValues, sort]);
+  }, [category._id, subCategories, filterValues, sort, filtersChanged]);
 
   return (
     <>
@@ -92,7 +96,7 @@ useEffect(() => {
             value={filterValues.find(f => f.name === prop.name).value}
             >
                 <option value='all'>All</option>
-              {prop.values.map((val) => (
+                  {prop.values.map((val) => (
                 <option value={val} key={val}>
                   {val}
                 </option>
@@ -104,7 +108,10 @@ useEffect(() => {
             <span>Sort:</span>
             <select 
             value={sort} 
-            onChange={ev => setSort(ev.target.value)}>
+            onChange={ev => {
+              setSort(ev.target.value);
+              setFiltersChanged(true);
+              }}>
               <option value='price-asc'>price, lowest first</option>
               <option value='price-desc'>price, highest first</option>
               <option value='_id-desc'>newest first</option>
@@ -117,7 +124,14 @@ useEffect(() => {
           <Spinner fullWidth/>
         )}
         {!loadingProducts && (
-          <ProductsGrid products={products} />
+          <div>
+            {products.length > 0 && (
+              <ProductsGrid products={products} />
+            )}
+            {products.length === 0 && (
+              <div>Sorry, no products found</div>
+            )}
+          </div>
         )}
       </Center>
     </>
