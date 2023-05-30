@@ -1,6 +1,7 @@
 import Center from "@/components/Center";
 import Header from "@/components/Header";
 import ProductsGrid from "@/components/ProductsGrid";
+import Spinner from "@/components/Spinner";
 import { Category } from "@/models/Category";
 import Product from "@/models/Product";
 import axios from "axios";
@@ -46,6 +47,9 @@ export default function CategoryPage({
         category.properties.map(p => ({name: p.name, value:'all'}))   
     );
     const [sort, setSort] = useState('_id-desc');
+    const [loadingProducts, setLoadingProducts] = useState(false)
+
+
 function handlerFilterChange(filterName, filterValue) {
     setFilterValues(prev => {
         return prev.map(p => ({
@@ -54,6 +58,7 @@ function handlerFilterChange(filterName, filterValue) {
     });
 }
 useEffect(() => {
+  setLoadingProducts(true);
     const catIds = [category._id, ...(subCategories.map((c) => c._id) || [])];
     const params = new URLSearchParams();
     params.set('categories', catIds.join(','));
@@ -66,6 +71,9 @@ useEffect(() => {
     const url = `/api/products?` + params.toString();
     axios.get(url).then((res) => {
       setProducts(res.data);
+      setTimeout(() => {
+        setLoadingProducts(false);
+      }, 1000);
     });
   }, [category._id, subCategories, filterValues, sort]);
 
@@ -105,7 +113,12 @@ useEffect(() => {
           </Filter>
         </FilterWrapper>
         </CategoryHeader>
-        <ProductsGrid products={products} />
+        {loadingProducts && (
+          <Spinner fullWidth/>
+        )}
+        {!loadingProducts && (
+          <ProductsGrid products={products} />
+        )}
       </Center>
     </>
   );
