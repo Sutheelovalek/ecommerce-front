@@ -45,7 +45,7 @@ export default function CategoryPage({
     const [filterValues, setFilterValues] = useState(
         category.properties.map(p => ({name: p.name, value:'all'}))   
     );
-    const [sort, setSort] = useState('price_desc');
+    const [sort, setSort] = useState('_id-desc');
 function handlerFilterChange(filterName, filterValue) {
     setFilterValues(prev => {
         return prev.map(p => ({
@@ -97,10 +97,11 @@ useEffect(() => {
             <select 
             value={sort} 
             onChange={ev => setSort(ev.target.value)}>
-              <option value='price_asc'>price, lowest first</option>
-              <option value='price_desc'>price, highest first</option>
+              <option value='price-asc'>price, lowest first</option>
+              <option value='price-desc'>price, highest first</option>
+              <option value='_id-desc'>newest first</option>
+              <option value='_id-asc'>oldest first</option>
             </select>
-
           </Filter>
         </FilterWrapper>
         </CategoryHeader>
